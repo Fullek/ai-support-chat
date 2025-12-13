@@ -1,0 +1,35 @@
+# static/index.html (very small chat UI) - placed in /static
+INDEX_HTML = '''
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AI Support Demo - Chat</title>
+    <style>
+      body{font-family:Arial;max-width:700px;margin:20px auto}
+      #messages{border:1px solid #ddd;padding:10px;height:300px;overflow:auto}
+      .user{color:blue}
+      .bot{color:green}
+    </style>
+  </head>
+  <body>
+    <h2>AI Support Demo - Chat</h2>
+    <div id="messages"></div>
+    <input id="input" style="width:80%" placeholder="Type message..." />
+    <button id="send">Send</button>
+    <script>
+      const send = async ()=>{
+        const msg = document.getElementById('input').value
+        if(!msg) return
+        const mbox = document.getElementById('messages')
+        const userDiv = document.createElement('div'); userDiv.className='user'; userDiv.textContent='You: '+msg; mbox.appendChild(userDiv)
+        document.getElementById('input').value=''
+        const res = await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
+        const data = await res.json()
+        const botDiv = document.createElement('div'); botDiv.className='bot'; botDiv.textContent='Agent: '+(data.reply||'(no reply)'); mbox.appendChild(botDiv)
+        mbox.scrollTop = mbox.scrollHeight
+      }
+      document.getElementById('send').onclick=send
+    </script>
+  </body>
+</html>
