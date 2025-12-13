@@ -1,1 +1,1 @@
-# ai-support-chat
+# ai-support-chat-demo
