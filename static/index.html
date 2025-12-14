@@ -1,35 +1,40 @@
-# static/index.html (very small chat UI) - placed in /static
-INDEX_HTML = '''
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>AI Support Demo - Chat</title>
-    <style>
-      body{font-family:Arial;max-width:700px;margin:20px auto}
-      #messages{border:1px solid #ddd;padding:10px;height:300px;overflow:auto}
-      .user{color:blue}
-      .bot{color:green}
-    </style>
-  </head>
-  <body>
-    <h2>AI Support Demo - Chat</h2>
-    <div id="messages"></div>
-    <input id="input" style="width:80%" placeholder="Type message..." />
-    <button id="send">Send</button>
-    <script>
-      const send = async ()=>{
-        const msg = document.getElementById('input').value
-        if(!msg) return
-        const mbox = document.getElementById('messages')
-        const userDiv = document.createElement('div'); userDiv.className='user'; userDiv.textContent='You: '+msg; mbox.appendChild(userDiv)
-        document.getElementById('input').value=''
-        const res = await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
-        const data = await res.json()
-        const botDiv = document.createElement('div'); botDiv.className='bot'; botDiv.textContent='Agent: '+(data.reply||'(no reply)'); mbox.appendChild(botDiv)
-        mbox.scrollTop = mbox.scrollHeight
-      }
-      document.getElementById('send').onclick=send
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>AI Support Chat Demo</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: 20px auto; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+    .user { color: blue; margin: 5px 0; }
+    .bot { color: green; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>AI Support Chat (Demo)</h2>
+  <div id="chat"></div>
+  <input id="msg" style="width:80%" placeholder="Type message..." />
+  <button onclick="send()">Send</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("msg");
+      const chat = document.getElementById("chat");
+      const text = input.value;
+      if (!text) return;
+
+      chat.innerHTML += `<div class="user">You: ${text}</div>`;
+      input.value = "";
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      chat.innerHTML += `<div class="bot">Agent: ${data.reply}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
 </html>
