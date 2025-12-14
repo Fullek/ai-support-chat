@@ -28,6 +28,10 @@ def call_groq(user_message):
     r = requests.post(url, headers=headers, json=payload, timeout=30)
     return r.json()["choices"][0]["message"]["content"]
 
+@app.route("/")
+def home():
+    return send_from_directory("static", "index.html")
+
 @app.route("/chat")
 def chat():
     return send_from_directory("static", "index.html")
