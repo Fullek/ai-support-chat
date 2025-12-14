@@ -25,8 +25,14 @@ def call_groq(user_message):
         ],
         "temperature": 0.2
     }
+
     r = requests.post(url, headers=headers, json=payload, timeout=30)
-    return r.json()["choices"][0]["message"]["content"]
+
+    if r.status_code != 200:
+        return f"[ERROR from Groq] {r.status_code}: {r.text}"
+
+    data = r.json()
+    return data["choices"][0]["message"]["content"]
 
 @app.route("/")
 def home():
